@@ -5,7 +5,7 @@ CBars is a small c99 library for progress bars in the terminal.
 I was bored and wanted an excuse to code C.
 
 # Example
-```
+```c
 char percent[10] = {0};
 cbar_t bar = cbar(64, '[', ']', '-', ' ', "Loading Level: ", percent);
 
