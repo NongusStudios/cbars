@@ -11,6 +11,7 @@ cbar_color_desc_t cbar_color_fill(double progress, uint32_t color){
         .begin_color = color,
         .end_color = color,
         .fill_color = color,
+        .none_color = color,
         .before_color = color,
         .after_color = color,
     };
@@ -20,6 +21,7 @@ cbar_color_desc_t cbar_color_desc(
     uint32_t begin_color,
     uint32_t end_color,
     uint32_t fill_color,
+    uint32_t none_color,
     uint32_t before_color,
     uint32_t after_color
 ){
@@ -28,6 +30,7 @@ cbar_color_desc_t cbar_color_desc(
         .begin_color = begin_color,
         .end_color = end_color,
         .fill_color = fill_color,
+        .none_color = none_color,
         .before_color = before_color,
         .after_color = after_color,
     };
@@ -135,13 +138,14 @@ void cbar_display_bar_colored(
     printf("\r%s", bar.before);
     set_color(color_desc.begin_color);
     printf("%c", bar.begin);
-    set_color(color_desc.fill_color);
                                                        // subtract 2 to account for the beginning and end characters
     uint32_t progress = (uint32_t)floor(bar.progress * (bar.length-2));
     for(uint32_t i = 1; i <= bar.length-2; i++){
         if(i <= progress){
+            set_color(color_desc.fill_color);
             printf("%c", bar.fill);
         } else {
+            set_color(color_desc.none_color);
             printf("%c", bar.none);
         }
     }
@@ -186,13 +190,14 @@ void cbar_display_bars_colored(
         printf("%s", bar.before);
         set_color(color_desc.begin_color);
         printf("%c", bar.begin);
-        set_color(color_desc.fill_color);
                                                         // subtract 2 to account for the beginning and end characters
         uint32_t progress = (uint32_t)floor(bar.progress * (bar.length-2));
         for(uint32_t i = 1; i <= bar.length-2; i++){
             if(i <= progress){
+                set_color(color_desc.fill_color);
                 printf("%c", bar.fill);
             } else {
+                set_color(color_desc.none_color);
                 printf("%c", bar.none);
             }
         }

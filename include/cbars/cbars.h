@@ -6,6 +6,7 @@ typedef struct cbar_color_desc_t {
     uint32_t begin_color;
     uint32_t end_color;
     uint32_t fill_color;
+    uint32_t none_color;
     uint32_t before_color;
     uint32_t after_color;
 } cbar_color_desc_t;
@@ -17,6 +18,7 @@ cbar_color_desc_t cbar_color_desc(
     uint32_t begin_color,
     uint32_t end_color,
     uint32_t fill_color,
+    uint32_t none_color,
     uint32_t before_color,
     uint32_t after_color
 );

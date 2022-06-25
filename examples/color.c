@@ -14,14 +14,13 @@ int main(){
     srand(time(NULL));
     
     char end[10] = {0};
-    cbar_t progress_bar = cbar(32, '[', ']', '=', ' ', "Progress: ", end);
+    cbar_t progress_bar = cbar(32, '[', ']', '=', '-', "Progress: ", end);
 
     // order MATTERS : uses ANSII escape color codes
     cbar_color_desc_t colors[] = {
-        // progress : begin color ('[') : end color (']') : fill color ('=') : before color ("Progress: ") : after color ("XXX%")
-        cbar_color_desc(0.0,  95, 95, 31, 0, 0), // From 0%  -  20% | Red
-        cbar_color_desc(0.2,  95, 95, 93, 0, 0), // From 20% -  80% | Bright Yellow
-        cbar_color_desc(0.8,  95, 95, 92, 0, 0), // From 80% - >80% | Bright Green
+        // progress : begin color ('[') : end color (']') : fill color ('=') : none color ('-') : before color ("Progress: ") : after color ("XXX%")
+        cbar_color_desc(0.0,  95, 95, 92, 31, 0, 0), // From 20% -  80% | Bright Yellow
+        cbar_color_desc(0.5,  95, 95, 31, 92, 0, 0), // From 80% - >80% | Bright Green
     };
 
     const double PERIOD = 0.1;
@@ -34,7 +33,7 @@ int main(){
 
         sprintf(end, " %u%c", (uint32_t)floor(progress_bar.progress*100.0), '%');
 
-        cbar_display_bar_colored(&progress_bar, colors, 3);
+        cbar_display_bar_colored(&progress_bar, colors, 2);
     }
     cbar_show_cursor();
     return 0;

@@ -12,28 +12,28 @@ int main(){
         cbar(BAR_SIZE, '[', ']', '=', ' ', "Bar1: ", ""),
         cbar(BAR_SIZE, '<', '>', '#', ' ', "Bar2: ", ""),
         cbar(BAR_SIZE, '(', ')', '>', ' ', "Bar3: ", ""),
-        cbar(BAR_SIZE, '|', '|', '*', ' ', "Bar4: ", ""),
+        cbar(BAR_SIZE, '|', '|', '*', '/', "Bar4: ", ""),
     };
     size_t bar_count = 4;
 
     cbar_color_desc_t bar1_colors[] = {
-        cbar_color_desc(0.0,  35, 35, 31, 0, 0),
-        cbar_color_desc(0.5,  35, 35, 93, 0, 0),
-        cbar_color_desc(0.8,  35, 35, 92, 0, 0),
+        cbar_color_desc(0.0,  35, 35, 31, 0, 0, 0),
+        cbar_color_desc(0.5,  35, 35, 93, 0, 0, 0),
+        cbar_color_desc(0.8,  35, 35, 92, 0, 0, 0),
     };
     cbar_color_desc_t bar2_colors[] = {
-        cbar_color_desc(0.0,  95, 95, 92, 0, 0),
-        cbar_color_desc(0.3,  95, 95, 93, 0, 0),
-        cbar_color_desc(0.6,  95, 95, 31, 0, 0),
+        cbar_color_desc(0.0,  95, 95, 92, 0, 0, 0),
+        cbar_color_desc(0.3,  95, 95, 93, 0, 0, 0),
+        cbar_color_desc(0.6,  95, 95, 31, 0, 0, 0),
     };
     cbar_color_desc_t bar3_colors[] = {
-        cbar_color_desc(0.0,  32, 32, 31, 0, 0),
-        cbar_color_desc(0.1,  32, 32, 93, 0, 0),
-        cbar_color_desc(0.9,  32, 32, 92, 0, 0),
+        cbar_color_desc(0.0,  32, 32, 31, 0, 0, 0),
+        cbar_color_desc(0.1,  32, 32, 93, 0, 0, 0),
+        cbar_color_desc(0.9,  32, 32, 92, 0, 0, 0),
     };
     cbar_color_desc_t bar4_colors[] = {
-        cbar_color_desc(0.0,  95, 95, 31, 0, 0),
-        cbar_color_desc(0.5,  95, 95, 93, 0, 0),
+        cbar_color_desc(0.0,  95, 95, 31, 92, 0, 0),
+        cbar_color_desc(0.5,  95, 95, 92, 31, 0, 0),
     };
     cbar_color_desc_t* color_descs[] = {
         bar1_colors,
