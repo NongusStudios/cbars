@@ -25,5 +25,5 @@ Loading Level: [---------------------------------------                       ] 
 ```
 
 # Missing features that I might implement when I feel like it
-> Background colors
+> Background colors <br>
 > Text effects (Bold, Italic, etc)
