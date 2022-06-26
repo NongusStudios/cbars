@@ -217,3 +217,4 @@ void cbar_hide_cursor(){
 void cbar_show_cursor(){
     printf("\033[?25h");
 }
+

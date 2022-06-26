@@ -60,3 +60,4 @@ void cbar_display_bars_colored(
 
 void cbar_hide_cursor();
 void cbar_show_cursor();
+
