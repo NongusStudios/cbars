@@ -12,7 +12,7 @@ cbar_t bar = cbar(64, '[', ']', '-', ' ', "Loading Level: ", percent);
 cbar_hide_cursor();
 while(loading()){
     bar.progress = load();
-    sprintf(percent, "%u%", (uint32_t)floor(bar.progress*100.0));
+    sprintf(percent, "%u%c", (uint32_t)floor(bar.progress*100.0), '%');
 
     cbar_display_bar(&bar);
 }
