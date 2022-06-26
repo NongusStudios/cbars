@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stddef.h>
 
 typedef struct cbar_color_desc_t {
     double   progress;

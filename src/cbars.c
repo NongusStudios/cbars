@@ -101,7 +101,7 @@ void cbar_display_bars(const cbar_t* bars, size_t count){
         }
         printf("%c%s\n", bar.end, bar.after);
     }
-    printf("\033[%lluF", count);
+    printf("\033[%luF", count);
 }
 void cbar_display_bar_colored(
     const cbar_t* pbar,
@@ -208,7 +208,7 @@ void cbar_display_bars_colored(
         printf("%s\n", bar.after);
         reset_color();
     }
-    printf("\033[%lluF", count);
+    printf("\033[%luF", count);
 }
 
 void cbar_hide_cursor(){

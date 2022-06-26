@@ -1,4 +1,5 @@
 #include <cbars/cbars.h>
+#include <stdio.h>
 #include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -38,3 +39,4 @@ int main(){
     cbar_show_cursor();
     return 0;
 }
+

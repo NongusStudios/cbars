@@ -3,6 +3,7 @@ project(cbars VERSION 1.0.0)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_C_STANDARD 99)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_compile_options(-Wall -pedantic)
 
 include_directories(include)
@@ -14,7 +15,8 @@ add_library(cbars
     ${CBAR_SRC}
 )
 
-#add_executable(out examples/simple.c)
-#target_link_libraries(out
+#add_executable(a.out examples/multiple_color.c)
+#target_link_libraries(a.out
 #    cbars
+#    m
 #)
