@@ -27,7 +27,9 @@ CBars uses a custom syntax to define how a bar is rendered.<br>
 > - $P is used to render the percentage of completion (0-100). <br>
 > - $E is used to set effects (E.G. `"$E BOLD;256(6); $E"`). <br>
 > > - Everything is separated with a semi-colon.<br>
-> > - You must end every effect with a semi-colon.<br>
+> > - `256(n)` and `BG256(n)` is used for 256 colors.<br>
+> > - `RGB(r, g, b)` and `BGRGB(r, g, b)` is used for rgb colors.<br>
+> > - To see all possible effects go to `include/cbars/cbars.h` and look at the `cbar_effect_t` enum.<br>
 
 # Missing features that I might implement when I feel like it
 > Cursor Controls (Although you can use ANSII escape sequences in the bar string)
