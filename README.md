@@ -1,29 +1,22 @@
 # cbars/cbars.h
 CBars is a small c99 library for progress bars in the terminal.
 
-# Why??????
-I was bored and wanted an excuse to code C.
-
 # Example
 ```c
-char percent[10] = {0};
-cbar_t bar = cbar(64, '[', ']', '-', ' ', "Loading Level: ", percent);
-
+cbar_t bar = cbar(48, "Loading Level: [$F'-'$F$N' '$N] $P%");
 cbar_hide_cursor();
 while(loading()){
     bar.progress = load();
-    sprintf(percent, "%u%c", (uint32_t)floor(bar.progress*100.0), '%');
-
     cbar_display_bar(&bar);
 }
 cbar_show_cursor();
+printf("\n");
 ```
 
-# Result (at 63%)
+# Result
 ```
-Loading Level: [---------------------------------------                       ] 63%
+Loading Level: [------------------------------------            ] 76%
 ```
 
 # Missing features that I might implement when I feel like it
-> Background colors <br>
-> Text effects (Bold, Italic, etc)
+> Cursor Controls (Although you can use ANSII escape sequences in the bar string)
