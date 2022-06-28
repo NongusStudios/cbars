@@ -59,7 +59,7 @@ void cbar_strcpy_no_space(char* dest, const char* src){
 cbar_effect_data_t cbar_string_to_effect(const char* str, cbar_effect_type_t* type){
     cbar_effect_data_t data = {.effect = CBAR_EFFECT_RESET};
     *type = CBAR_EFFECT_TYPE_EFFECT;
-
+    
     if(cbar_streq(str, "RESET")){
         data.effect = CBAR_EFFECT_RESET;
     } else if(cbar_streq(str, "BOLD")){
@@ -335,6 +335,7 @@ bool cbar_append_fill(char** current, const char** bar_str, size_t amount_to_fil
             *current += amount_to_fill;
             free(str);
             (*bar_str)++;
+            if(**bar_str != 39) return false;
         }
         (*bar_str)++;
     }
@@ -344,15 +345,10 @@ bool cbar_append_fill(char** current, const char** bar_str, size_t amount_to_fil
 
 size_t cbar_get_effect_to_escape_codes_len(const char* effects){
     size_t count = 0;
-    bool in_brackets = false;
     const char* current = effects;
     while(*current != '\0'){
-        if(*current == ',' && !in_brackets){
+        if(*current == ';'){
             count += strlen(CBAR_FGRGB_STR) + 3*3;
-        } else if(*current == '('){
-            in_brackets = true;
-        } else if(*current == ')'){
-            in_brackets = false;
         }
         current++;
     }
@@ -367,10 +363,9 @@ char* cbar_effect_to_escape_codes(const char* effects){
     
     char* codes = calloc(cbar_get_effect_to_escape_codes_len(processed)+1, 1);
     char* codes_original = codes;
-    bool in_brackets = false;
     const char* current = processed;
     while(*current != '\0'){
-        if(*current == ',' && !in_brackets){
+        if(*current == ';'){
             size_t size = end-begin;
             char* slice = calloc(size, 1);
             strncpy(slice, processed+begin, size);
@@ -410,10 +405,6 @@ char* cbar_effect_to_escape_codes(const char* effects){
             }
             free(slice);
             begin = end+1;
-        } else if(*current == '('){
-            in_brackets = true;
-        } else if(*current == ')'){
-            in_brackets = false;
         }
         end++;
         current++;
@@ -518,9 +509,15 @@ void cbar_display_bar(const cbar_t* bar){
     fflush(stdout);
     free(bar_str);
 }
-//void cbar_display_bars(const cbar_t* bars, size_t count){
-
-//}
+void cbar_display_bars(const cbar_t* bars, size_t count){
+    for(size_t i = 0; i < count; i++){
+        char* bar_str = cbar_tostr(&bars[i]);
+        if(!bar_str) continue;
+        printf("%s\n", bar_str);
+        free(bar_str);
+    }
+    printf("\033[%luF", count);
+}
 
 void cbar_hide_cursor(){
     printf("\033[?25l");

@@ -106,12 +106,18 @@ typedef enum cbar_effect_t {
     CBAR_EFFECT_BRBG_WHITE          = 107,
 } cbar_effect_t;
 
-// returns a string allocated with calloc
+/*
+ * Converts a cbar_t to a string,
+ * returns a string allocated with calloc
+*/
 char* cbar_tostr(const cbar_t* bar);
-// returns a string allocated with calloc
+/* 
+ * Converts an E string ($E BOLD;FGBR_GREEN; $E) to ansii escape codes,
+ * returns a string allocated with calloc
+*/
 char* cbar_effect_to_escape_codes(const char* effects);
 void cbar_display_bar(const cbar_t* bar);
-//void cbar_display_bars(const cbar_t* bars, size_t count);
+void cbar_display_bars(const cbar_t* bars, size_t count);
 
 void cbar_hide_cursor();
 void cbar_show_cursor();

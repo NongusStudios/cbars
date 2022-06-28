@@ -19,7 +19,15 @@
 #include <unistd.h>
 
 int main(){
-    cbar_t bar = cbar(24, "$E 256(12);BOLD; $EAcquiring Knowledge: |$E BRFG_GREEN;RESET_BOLD_DIM; $E$F'-'$F>$N' '$N $E 256(12); $E|$E BRFG_RED; $E$N'-'$N>$F' '$F    $E 256(12); $E$P%$E RESET; $E");
+    // $E EFFECT $E sets the current effect. To see all effects goto cbars.h/cbar_effect_t
+    // NOTE1: $E 256(xxx) $E for 256 colors
+    // NOTE2: $E RGB(r, g, b) for rgb color (0-255)
+    // NOTE3: $E BOLD,UNDERLINE,256(157) $E to use multiple effects in one block
+    // NOTE4: Spaces are ommitted
+    // BG256 and BGRGB to set background 
+
+                          // Set text to be bold     // Set color         // Set color and underline                // Set color                  // Reset underline and set color         // Reset foreground // Reset all effects             
+    cbar_t bar = cbar(48, "$E BOLD; $ELoading Level: $E RGB(8, 104, 252); $E[$E RGB(8, 252, 104);UNDERLINE $E$F'-'$F$E RGB(252, 8, 104); $E$N'-'$N$E RESET_UNDERLINE;RGB(8, 104, 252); $E] $E FG_RESET; $E$P% $E RESET; $E");
     cbar_hide_cursor();
     while(bar.progress <= 1.0){
         bar.progress += 0.001;
