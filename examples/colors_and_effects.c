@@ -27,7 +27,7 @@ int main(){
     // BG256 and BGRGB to set background 
 
                           // Set text to be bold     // Set color         // Set color and underline                // Set color                  // Reset underline and set color         // Reset foreground // Reset all effects             
-    cbar_t bar = cbar(48, "$E BOLD; $ELoading Level: $E RGB(8, 104, 252); $E[$E RGB(8, 252, 104);UNDERLINE $E$F'-'$F$E RGB(252, 8, 104); $E$N'-'$N$E RESET_UNDERLINE;RGB(8, 104, 252); $E] $E FG_RESET; $E$P% $E RESET; $E");
+    cbar_t bar = cbar(48, "$E BOLD; $ELoading Level: $E RGB(8, 104, 252); $E[$E RGB(8, 252, 104);UNDERLINE; $E$F'-'$F$E RGB(252, 8, 104); $E$N'-'$N$E RESET_UNDERLINE;RGB(8, 104, 252); $E] $E FG_RESET; $E$P% $E RESET; $E");
     cbar_hide_cursor();
     while(bar.progress <= 1.0){
         bar.progress += 0.001;
