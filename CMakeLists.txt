@@ -4,7 +4,7 @@ project(cbars VERSION 1.0.0)
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-add_compile_options(-Wall -pedantic -g)
+add_compile_options(-Wall -pedantic)
 
 include_directories(include)
 

@@ -22,7 +22,7 @@ int main(){
     // $E EFFECT $E sets the current effect. To see all effects goto cbars.h/cbar_effect_t
     // NOTE1: $E 256(xxx) $E for 256 colors
     // NOTE2: $E RGB(r, g, b) for rgb color (0-255)
-    // NOTE3: $E BOLD,UNDERLINE,256(157) $E to use multiple effects in one block
+    // NOTE3: $E BOLD;UNDERLINE;256(157); $E to use multiple effects in one block
     // NOTE4: Spaces are ommitted
     // BG256 and BGRGB to set background 
 

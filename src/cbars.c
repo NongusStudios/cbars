@@ -358,7 +358,7 @@ char* cbar_effect_to_escape_codes(const char* effects){
     size_t begin = 0;
     size_t end = 0;
     
-    char* processed = calloc(strlen(effects)+1, 1);
+    char* processed = calloc(strlen(effects)+13, 1);
     cbar_strcpy_no_space(processed, effects);
     
     char* codes = calloc(cbar_get_effect_to_escape_codes_len(processed)+1, 1);
@@ -414,11 +414,24 @@ char* cbar_effect_to_escape_codes(const char* effects){
     return codes_original;
 }
 
+
+size_t cbar_estimate_formatted_size(const cbar_t* bar){
+    const size_t UNCERTAINTY = 6;
+    size_t added_len = 0;
+    const char* bar_str = bar->bar;
+    while(*bar_str != '\0'){
+        if(*bar_str == CBAR_FORMAT_CHAR){
+            if(*(bar_str + 1) == CBAR_PERCENT_FORMAT) added_len += 3;
+            else if(*(bar_str + 1) == CBAR_FILL_FORMAT || *(bar_str + 1) == CBAR_NONE_FORMAT) added_len += (size_t)ceil((double)bar->len/2.0);
+        }
+        bar_str++;
+    }
+    return strlen(bar->bar) + added_len + UNCERTAINTY;
+}
+
 char* cbar_tostr(const cbar_t* bar){
     assert(bar != NULL);
-    // Very confident everything will fit, but may as well be sure
-    const size_t UNCERTAINTY = 8;
-    size_t bar_str_len = strlen(bar->bar) + bar->len + UNCERTAINTY;
+    size_t bar_str_len = cbar_estimate_formatted_size(bar);
     char* str = calloc(bar_str_len+1, 1);
     
     size_t amount_filled = (size_t)floor(bar->progress*(double)bar->len);
@@ -492,7 +505,7 @@ char* cbar_tostr(const cbar_t* bar){
             bar_str++;
         }
     }
-
+    
     return str;
 }
 
