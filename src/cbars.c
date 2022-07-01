@@ -416,17 +416,27 @@ char* cbar_effect_to_escape_codes(const char* effects){
 
 
 size_t cbar_estimate_formatted_size(const cbar_t* bar){
-    const size_t UNCERTAINTY = 6;
-    size_t added_len = 0;
+    size_t len = 0;
     const char* bar_str = bar->bar;
     while(*bar_str != '\0'){
         if(*bar_str == CBAR_FORMAT_CHAR){
-            if(*(bar_str + 1) == CBAR_PERCENT_FORMAT) added_len += 3;
-            else if(*(bar_str + 1) == CBAR_FILL_FORMAT || *(bar_str + 1) == CBAR_NONE_FORMAT) added_len += (size_t)ceil((double)bar->len/2.0);
-        }
+            if(*(bar_str + 1) == CBAR_PERCENT_FORMAT) len += 3;
+            else if(
+                *(bar_str + 1) == CBAR_FILL_FORMAT || *(bar_str + 1) == CBAR_NONE_FORMAT
+            ) len += (size_t)ceil((double)bar->len/2.0);
+            else if(*(bar_str + 1) == CBAR_START_END_EFFECT) {
+                bar_str++;
+                while(*bar_str != CBAR_FORMAT_CHAR){
+                    if(*bar_str == '\0') return len;
+                    if(*bar_str == ';') len += strlen(CBAR_FGRGB_STR);
+                    bar_str++;
+                }
+                if(*(++bar_str) == '\0') break;
+            }
+        } else len += 1;
         bar_str++;
     }
-    return strlen(bar->bar) + added_len + UNCERTAINTY;
+    return len;
 }
 
 char* cbar_tostr(const cbar_t* bar){
