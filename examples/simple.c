@@ -28,6 +28,7 @@ int main(){
 
     // $P will be replaced with the percentage of the bar
     // First two args are the fill and none characters
+    
     cbar_t bar = cbar(48, "Loading Level: [$F'-'$F$N' '$N] $P%");
     cbar_hide_cursor();
     while(bar.progress <= 1.0){
@@ -37,6 +38,7 @@ int main(){
     }
     cbar_show_cursor();
     printf("\n");
+
     return 0;
 }
 

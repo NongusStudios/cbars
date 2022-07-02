@@ -56,9 +56,9 @@ typedef enum cbar_effect_t {
     CBAR_EFFECT_ITALIC              = 3,
     CBAR_EFFECT_UNDERLINE           = 4,
     CBAR_EFFECT_BLINKING            = 5,
-    CBAR_EFFECT_INVERSE             = 6,
-    CBAR_EFFECT_HIDDEN              = 7,
-    CBAR_EFFECT_STRIKETHROUGH       = 8,
+    CBAR_EFFECT_INVERSE             = 7,
+    CBAR_EFFECT_HIDDEN              = 8,
+    CBAR_EFFECT_STRIKETHROUGH       = 9,
 
     CBAR_EFFECT_RESET_BOLD_DIM      = 22,
     CBAR_EFFECT_RESET_ITALIC        = 23,
