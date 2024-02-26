@@ -15,8 +15,8 @@ add_library(cbars
     ${CBAR_SRC}
 )
 
-#add_executable(a.out examples/simple.c)
-#target_link_libraries(a.out
-#    cbars
-#    m
-#)
+add_executable(a.out examples/colors_and_effects.c)
+target_link_libraries(a.out
+    cbars
+    m
+)

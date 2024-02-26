@@ -367,7 +367,7 @@ char* cbar_effect_to_escape_codes(const char* effects){
     while(*current != '\0'){
         if(*current == ';'){
             size_t size = end-begin;
-            char* slice = calloc(size, 1);
+            char* slice = calloc(size+1, 1);
             strncpy(slice, processed+begin, size);
              
             cbar_effect_type_t type = CBAR_EFFECT_TYPE_INVALID;
