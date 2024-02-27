@@ -6,17 +6,10 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_compile_options(-Wall -pedantic)
 
-include_directories(include)
+file(GLOB EXAMPLES examples/*.c)
 
-file(GLOB CBAR_SRC
-    src/*.c
-)
-add_library(cbars
-    ${CBAR_SRC}
-)
-
-add_executable(a.out examples/colors_and_effects.c)
-target_link_libraries(a.out
-    cbars
-    m
-)
+foreach (EXAMPLE ${EXAMPLES})
+    get_filename_component(EXEC ${EXAMPLE} NAME_WE)
+    add_executable("${EXEC}.out" ${EXAMPLE})
+    target_link_libraries("${EXEC}.out" m)
+endforeach ()

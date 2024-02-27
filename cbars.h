@@ -15,8 +15,116 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#pragma once
 
-#include <cbars/cbars.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+#define CBAR_FORMAT_CHAR '$'
+// F - Fill "$F"
+#define CBAR_FILL_FORMAT 'F'
+// N - None "$N"
+#define CBAR_NONE_FORMAT 'N'
+// P - Percent "$P"
+#define CBAR_PERCENT_FORMAT 'P'
+// E - Effect "$E X $E"
+#define CBAR_START_END_EFFECT 'E'
+
+#define cbar(l, s) (cbar_t){.progress = 0.0, .len = l, .bar = s}
+#define cbar_display(b, ...) {\
+    cbar_t cbar_bar_copy = b; \
+    cbar_bar_copy.bar = malloc(snprintf(NULL, 0, b.bar, __VA_ARGS__)+1); \
+    sprintf(cbar_bar_copy.bar, b.bar, __VA_ARGS__); \
+    cbar_display_bar(&cbar_bar_copy); \
+    free(cbar_bar_copy.bar); \
+}
+
+typedef struct cbar_t {
+    // 0.0 - 1.0
+    double progress;
+    // Size of the bar in chars
+    size_t len;
+    // How the bar is displayed 
+    char*  bar;
+} cbar_t;
+typedef enum cbar_effect_t {
+    CBAR_EFFECT_RESET               = 0,
+    CBAR_EFFECT_BOLD                = 1,
+    CBAR_EFFECT_DIM                 = 2,
+    CBAR_EFFECT_ITALIC              = 3,
+    CBAR_EFFECT_UNDERLINE           = 4,
+    CBAR_EFFECT_BLINKING            = 5,
+    CBAR_EFFECT_INVERSE             = 7,
+    CBAR_EFFECT_HIDDEN              = 8,
+    CBAR_EFFECT_STRIKETHROUGH       = 9,
+
+    CBAR_EFFECT_RESET_BOLD_DIM      = 22,
+    CBAR_EFFECT_RESET_ITALIC        = 23,
+    CBAR_EFFECT_RESET_UNDERLINE     = 24,
+    CBAR_EFFECT_RESET_BLINKING      = 25,
+    CBAR_EFFECT_RESET_INVERSE       = 27,      
+    CBAR_EFFECT_RESET_HIDDEN        = 28,
+    CBAR_EFFECT_RESET_STRIKETHROUGH = 29,
+    
+    CBAR_EFFECT_FG_BLACK            = 30,
+    CBAR_EFFECT_FG_RED              = 31,
+    CBAR_EFFECT_FG_GREEN            = 32,
+    CBAR_EFFECT_FG_YELLOW           = 33,
+    CBAR_EFFECT_FG_BLUE             = 34,
+    CBAR_EFFECT_FG_MAGENTA          = 35,
+    CBAR_EFFECT_FG_CYAN             = 36,
+    CBAR_EFFECT_FG_WHITE            = 37,
+    CBAR_EFFECT_FG_RESET            = 39,
+
+    CBAR_EFFECT_BG_BLACK            = 40,
+    CBAR_EFFECT_BG_RED              = 41,
+    CBAR_EFFECT_BG_GREEN            = 42,
+    CBAR_EFFECT_BG_YELLOW           = 43,
+    CBAR_EFFECT_BG_BLUE             = 44,
+    CBAR_EFFECT_BG_MAGENTA          = 45,
+    CBAR_EFFECT_BG_CYAN             = 46,
+    CBAR_EFFECT_BG_WHITE            = 47,
+    CBAR_EFFECT_BG_RESET            = 49,
+
+    CBAR_EFFECT_BRFG_BLACK          = 90,
+    CBAR_EFFECT_BRFG_RED            = 91,
+    CBAR_EFFECT_BRFG_GREEN          = 92,
+    CBAR_EFFECT_BRFG_YELLOW         = 93,
+    CBAR_EFFECT_BRFG_BLUE           = 94,
+    CBAR_EFFECT_BRFG_MAGENTA        = 95,
+    CBAR_EFFECT_BRFG_CYAN           = 96,
+    CBAR_EFFECT_BRFG_WHITE          = 97,
+    
+    CBAR_EFFECT_BRBG_BLACK          = 100,
+    CBAR_EFFECT_BRBG_RED            = 101,
+    CBAR_EFFECT_BRBG_GREEN          = 102,
+    CBAR_EFFECT_BRBG_YELLOW         = 103,
+    CBAR_EFFECT_BRBG_BLUE           = 104,
+    CBAR_EFFECT_BRBG_MAGENTA        = 105,
+    CBAR_EFFECT_BRBG_CYAN           = 106,
+    CBAR_EFFECT_BRBG_WHITE          = 107,
+} cbar_effect_t;
+
+/*
+ * Converts a cbar_t to a string,
+ * returns a string allocated with calloc
+*/
+char* cbar_tostr(const cbar_t* bar);
+/* 
+ * Converts an E string ($E BOLD;FGBR_GREEN; $E) to ansii escape codes,
+ * returns a string allocated with calloc
+*/
+char* cbar_effect_to_escape_codes(const char* effects);
+void cbar_display_bar(const cbar_t* bar);
+void cbar_display_bars(const cbar_t* bars, size_t count);
+
+void cbar_hide_cursor();
+void cbar_show_cursor();
+
+#ifdef CBARS_IMPL
+
 #include <stdbool.h>
 #include <assert.h>
 #include <math.h>
@@ -36,6 +144,113 @@ typedef enum cbar_effect_type_t {
     CBAR_EFFECT_TYPE_COLOR_BG256,
     CBAR_EFFECT_TYPE_COLOR_BGRGB,
 } cbar_effect_type_t;
+
+const cbar_effect_t CBARS_EFFECT_LOOKUP[] = {
+    CBAR_EFFECT_RESET               ,
+    CBAR_EFFECT_BOLD                ,
+    CBAR_EFFECT_DIM                 ,
+    CBAR_EFFECT_ITALIC              ,
+    CBAR_EFFECT_UNDERLINE           ,
+    CBAR_EFFECT_BLINKING            ,
+    CBAR_EFFECT_INVERSE             ,
+    CBAR_EFFECT_HIDDEN              ,
+    CBAR_EFFECT_STRIKETHROUGH       ,
+    CBAR_EFFECT_RESET_BOLD_DIM      ,
+    CBAR_EFFECT_RESET_ITALIC        ,
+    CBAR_EFFECT_RESET_UNDERLINE     ,
+    CBAR_EFFECT_RESET_BLINKING      ,
+    CBAR_EFFECT_RESET_INVERSE       , 
+    CBAR_EFFECT_RESET_HIDDEN        ,
+    CBAR_EFFECT_RESET_STRIKETHROUGH ,
+    CBAR_EFFECT_FG_BLACK            ,
+    CBAR_EFFECT_FG_RED              ,
+    CBAR_EFFECT_FG_GREEN            ,
+    CBAR_EFFECT_FG_YELLOW           ,
+    CBAR_EFFECT_FG_BLUE             ,
+    CBAR_EFFECT_FG_MAGENTA          ,
+    CBAR_EFFECT_FG_CYAN             ,
+    CBAR_EFFECT_FG_WHITE            ,
+    CBAR_EFFECT_FG_RESET            ,
+    CBAR_EFFECT_BG_BLACK            ,
+    CBAR_EFFECT_BG_RED              ,
+    CBAR_EFFECT_BG_GREEN            ,
+    CBAR_EFFECT_BG_YELLOW           ,
+    CBAR_EFFECT_BG_BLUE             ,
+    CBAR_EFFECT_BG_MAGENTA          ,
+    CBAR_EFFECT_BG_CYAN             ,
+    CBAR_EFFECT_BG_WHITE            ,
+    CBAR_EFFECT_BG_RESET            ,
+    CBAR_EFFECT_BRFG_BLACK          ,
+    CBAR_EFFECT_BRFG_RED            ,
+    CBAR_EFFECT_BRFG_GREEN          ,
+    CBAR_EFFECT_BRFG_YELLOW         ,
+    CBAR_EFFECT_BRFG_BLUE           ,
+    CBAR_EFFECT_BRFG_MAGENTA        ,
+    CBAR_EFFECT_BRFG_CYAN           ,
+    CBAR_EFFECT_BRFG_WHITE          ,
+    CBAR_EFFECT_BRBG_BLACK          ,
+    CBAR_EFFECT_BRBG_RED            ,
+    CBAR_EFFECT_BRBG_GREEN          ,
+    CBAR_EFFECT_BRBG_YELLOW         ,
+    CBAR_EFFECT_BRBG_BLUE           ,
+    CBAR_EFFECT_BRBG_MAGENTA        ,
+    CBAR_EFFECT_BRBG_CYAN           ,
+    CBAR_EFFECT_BRBG_WHITE          ,
+};
+
+const char* CBARS_STRING_LOOKUP[] = {
+    "RESET"               ,
+    "BOLD"                ,
+    "DIM"                 ,
+    "ITALIC"              ,
+    "UNDERLINE"           ,
+    "BLINKING"            ,
+    "INVERSE"             ,
+    "HIDDEN"              ,
+    "STRIKETHROUGH"       ,
+    "RESET_BOLD_DIM"      ,
+    "RESET_ITALIC"        ,
+    "RESET_UNDERLINE"     ,
+    "RESET_BLINKING"      ,
+    "RESET_INVERSE"       ,
+    "RESET_HIDDEN"        ,
+    "RESET_STRIKETHROUGH" ,
+    "FG_BLACK"            ,
+    "FG_RED"              ,
+    "FG_GREEN"            ,
+    "FG_YELLOW"           ,
+    "FG_BLUE"             ,
+    "FG_MAGENTA"          ,
+    "FG_CYAN"             ,
+    "FG_WHITE"            ,
+    "FG_RESET"            ,
+    "BG_BLACK"            ,
+    "BG_RED"              ,
+    "BG_GREEN"            ,
+    "BG_YELLOW"           ,
+    "BG_BLUE"             ,
+    "BG_MAGENTA"          ,
+    "BG_CYAN"             ,
+    "BG_WHITE"            ,
+    "BG_RESET"            ,
+    "BRFG_BLACK"          ,
+    "BRFG_RED"            ,
+    "BRFG_GREEN"          ,
+    "BRFG_YELLOW"         ,
+    "BRFG_BLUE"           ,
+    "BRFG_MAGENTA"        ,
+    "BRFG_CYAN"           ,
+    "BRFG_WHITE"          ,
+    "BRBG_BLACK"          ,
+    "BRBG_RED"            ,
+    "BRBG_GREEN"          ,
+    "BRBG_YELLOW"         ,
+    "BRBG_BLUE"           ,
+    "BRBG_MAGENTA"        ,
+    "BRBG_CYAN"           ,
+    "BRBG_WHITE"          ,
+};
+
 
 bool cbar_is_digit(const char* str){
     while(*str != '\0'){
@@ -60,7 +275,7 @@ cbar_effect_data_t cbar_string_to_effect(const char* str, cbar_effect_type_t* ty
     cbar_effect_data_t data = {.effect = CBAR_EFFECT_RESET};
     *type = CBAR_EFFECT_TYPE_EFFECT;
     
-    if(cbar_streq(str, "RESET")){
+    /*if(cbar_streq(str, "RESET")){
         data.effect = CBAR_EFFECT_RESET;
     } else if(cbar_streq(str, "BOLD")){
         data.effect = CBAR_EFFECT_BOLD;
@@ -159,129 +374,136 @@ cbar_effect_data_t cbar_string_to_effect(const char* str, cbar_effect_type_t* ty
     } else if(cbar_streq(str, "BRBG_CYAN")){
         data.effect = CBAR_EFFECT_BRBG_CYAN;
     } else if(cbar_streq(str, "BRBG_WHITE")){
-        data.effect = CBAR_EFFECT_BRBG_WHITE;
-    } else {
-        if(strlen(str) < 3){
+        data.effect = CBAR_EFFECT_BRBG_WHITE;*/
+
+    size_t lut_size = sizeof(CBARS_EFFECT_LOOKUP)/sizeof(cbar_effect_t);
+    for(size_t i = 0; i < lut_size; i++){
+        if(cbar_streq(str, CBARS_STRING_LOOKUP[i])) {
+            data.effect = CBARS_EFFECT_LOOKUP[i];
+            return data;
+        }
+    }
+
+    if(strlen(str) < 3){
+        *type = CBAR_EFFECT_TYPE_INVALID;
+        return data;
+    }
+    if(strncmp(str, "RGB", 3) == 0 || strncmp(str, "BGRGB", 5) == 0){
+        char* processed = calloc(strlen(str)+1, 1);
+        cbar_strcpy_no_space(processed, str);
+        size_t offset =0;
+        if(strncmp(str, "BGRGB", 5) == 0){
+            *type = CBAR_EFFECT_TYPE_COLOR_BGRGB;
+            processed += 2;
+            offset = 2;
+        } else {
+            *type = CBAR_EFFECT_TYPE_COLOR_RGB;
+        }
+        size_t processed_len = strlen(processed);
+        if(processed_len < 10  || processed_len > 16                ||
+           processed[3] != '(' || processed[processed_len-1] != ')'
+        ){
+            // min/max number of chars
+            free(processed-offset);
             *type = CBAR_EFFECT_TYPE_INVALID;
             return data;
         }
-        if(strncmp(str, "RGB", 3) == 0 || strncmp(str, "BGRGB", 5) == 0){
-            char* processed = calloc(strlen(str)+1, 1);
-            cbar_strcpy_no_space(processed, str);
-            size_t offset =0;
-            if(strncmp(str, "BGRGB", 5) == 0){
-                *type = CBAR_EFFECT_TYPE_COLOR_BGRGB;
-                processed += 2;
-                offset = 2;
-            } else {
-                *type = CBAR_EFFECT_TYPE_COLOR_RGB;
-            }
-            size_t processed_len = strlen(processed);
-            if(processed_len < 10  || processed_len > 16                ||
-               processed[3] != '(' || processed[processed_len-1] != ')'
-            ){
-                // min/max number of chars
+
+        char sr[14] = {0};
+        char sg[14] = {0};
+        char sb[14] = {0};
+        char* slices[] = {sr, sg, sb};
+        char* current = &processed[4];
+        char** slice_current = slices;
+        while(*current != ')'){
+            if(*current == '\0'){
                 free(processed-offset);
                 *type = CBAR_EFFECT_TYPE_INVALID;
                 return data;
             }
-            
-            char sr[14] = {0};
-            char sg[14] = {0};
-            char sb[14] = {0};
-            char* slices[] = {sr, sg, sb};
-            char* current = &processed[4];
-            char** slice_current = slices;
-            while(*current != ')'){
-                if(*current == '\0'){
-                    free(processed-offset);
-                    *type = CBAR_EFFECT_TYPE_INVALID;
-                    return data;
-                }
-                if(*current == ','){
-                    slice_current++;
-                } else {
-                    **slice_current = *current;
-                    (*slice_current)++;
-                }
-                current++;
-            }
-
-            if(!cbar_is_digit(sr) || !cbar_is_digit(sg) || !cbar_is_digit(sb)){
-                free(processed-offset);
-                *type = CBAR_EFFECT_TYPE_INVALID;
-                return data;
-            }
-
-            int r = atoi(sr);
-            int g = atoi(sg);
-            int b = atoi(sb);
-            if(r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255){
-                free(processed-offset);
-                *type = CBAR_EFFECT_TYPE_INVALID;
-                return data;
-            }
-
-            data = (cbar_effect_data_t){
-                .color_rgb = {(uint8_t)r, (uint8_t)g, (uint8_t)b}
-            };
-
-            free(processed-offset);
-        } else if(strncmp(str, "256", 3) == 0 || strncmp(str, "BG256", 5) == 0){
-            char* processed = calloc(strlen(str)+1, 1);
-            cbar_strcpy_no_space(processed, str);
-            size_t offset = 0;
-            if(strncmp(str, "BG256", 5) == 0){
-                *type = CBAR_EFFECT_TYPE_COLOR_BG256;
-                processed += 2;
-                offset = 2;
-            }
-            else {
-                *type = CBAR_EFFECT_TYPE_COLOR_256;
-            }
-            size_t processed_len = strlen(processed);
-            if(processed_len < 6   || processed_len > 8                 ||
-               processed[3] != '(' || processed[processed_len-1] != ')'
-            ){
-                // min/max number of chars
-                free(processed-offset);
-                *type = CBAR_EFFECT_TYPE_INVALID;
-                return data;
-            }
-
-            char slice[4] = {0};
-            char* current = &processed[4];
-            char* slice_current = slice;
-            while(*current != ')'){
-                if(*current == '\0'){
-                    free(processed-offset);
-                    *type = CBAR_EFFECT_TYPE_INVALID;
-                    return data;
-                }
-                *slice_current = *current;
+            if(*current == ','){
                 slice_current++;
-                current++;
+            } else {
+                **slice_current = *current;
+                (*slice_current)++;
             }
-
-            if(!cbar_is_digit(slice)){
-                free(processed-offset);
-                *type = CBAR_EFFECT_TYPE_INVALID;
-                return data;
-            }
-
-            int n = atoi(slice);
-            if(n < 0 || n > 255){
-                free(processed-offset);
-                *type = CBAR_EFFECT_TYPE_INVALID;
-                return data;
-            }
-
-            data.color_256 = (uint8_t)n;
-
-            free(processed-offset);
-        } else {
-            *type = CBAR_EFFECT_TYPE_INVALID;
+            current++;
         }
+
+        if(!cbar_is_digit(sr) || !cbar_is_digit(sg) || !cbar_is_digit(sb)){
+            free(processed-offset);
+            *type = CBAR_EFFECT_TYPE_INVALID;
+            return data;
+        }
+
+        int r = atoi(sr);
+        int g = atoi(sg);
+        int b = atoi(sb);
+        if(r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255){
+            free(processed-offset);
+            *type = CBAR_EFFECT_TYPE_INVALID;
+            return data;
+        }
+
+        data = (cbar_effect_data_t){
+            .color_rgb = {(uint8_t)r, (uint8_t)g, (uint8_t)b}
+        };
+
+        free(processed-offset);
+    } else if(strncmp(str, "256", 3) == 0 || strncmp(str, "BG256", 5) == 0){
+        char* processed = calloc(strlen(str)+1, 1);
+        cbar_strcpy_no_space(processed, str);
+        size_t offset = 0;
+        if(strncmp(str, "BG256", 5) == 0){
+            *type = CBAR_EFFECT_TYPE_COLOR_BG256;
+            processed += 2;
+            offset = 2;
+        }
+        else {
+            *type = CBAR_EFFECT_TYPE_COLOR_256;
+        }
+        size_t processed_len = strlen(processed);
+        if(processed_len < 6   || processed_len > 8                 ||
+           processed[3] != '(' || processed[processed_len-1] != ')'
+        ){
+            // min/max number of chars
+            free(processed-offset);
+            *type = CBAR_EFFECT_TYPE_INVALID;
+            return data;
+        }
+
+        char slice[4] = {0};
+        char* current = &processed[4];
+        char* slice_current = slice;
+        while(*current != ')'){
+            if(*current == '\0'){
+                free(processed-offset);
+                *type = CBAR_EFFECT_TYPE_INVALID;
+                return data;
+            }
+            *slice_current = *current;
+            slice_current++;
+            current++;
+        }
+
+        if(!cbar_is_digit(slice)){
+            free(processed-offset);
+            *type = CBAR_EFFECT_TYPE_INVALID;
+            return data;
+        }
+
+        int n = atoi(slice);
+        if(n < 0 || n > 255){
+            free(processed-offset);
+            *type = CBAR_EFFECT_TYPE_INVALID;
+            return data;
+        }
+
+        data.color_256 = (uint8_t)n;
+
+        free(processed-offset);
+    } else {
+        *type = CBAR_EFFECT_TYPE_INVALID;
     }
 
     return data;
@@ -548,4 +770,6 @@ void cbar_hide_cursor(){
 void cbar_show_cursor(){
     printf("\033[?25h");
 }
+
+#endif
 
